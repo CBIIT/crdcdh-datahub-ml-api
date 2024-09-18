@@ -24,7 +24,7 @@ mongoDAO.connect().then(async () => {
         version: () => {return config.version},
         getPermissiveValue: permissiveValueSvc.getPermissiveValue.bind(permissiveValueSvc),
     }
-});
+})
 
 module.exports = (req, res, next) => {
     apiAuthorization(req, null, null, public_api_list).then((authorized) => {
