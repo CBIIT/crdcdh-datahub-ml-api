@@ -21,38 +21,10 @@ class PermissiveValueSvc {
             property_name
         } = param;
         // step 1: check if the input value existing in permissive values case-insensitively
-        const property = this.termStore.get_term_by_property_name(source, version, property_name);
-        if (!property) {
-            throw new Error(`Property ${property_name} not found in ${source} version ${version}`);
-        }
-        let permissive_values = property[ALLOWED_VALUES];
-        const {
-            Code, 
-            Version
-        } = property[CDE_TERM]
-        if (Code && Version) {
-            const cdeData = await this.mongoDAO.getCDEPermissibleValues(Code, Version);
-            if (cdeData) {
-                permissive_values = cdeData[CDE_PERMISSIVE_VALUES];
-            }
-        }
-        const match = permissive_values.find(value => value.toLowerCase() === input_value.toLowerCase());
-        if (match) {
-            return {status: "passed", input_value: input_value, suggestion_type: "NCIt", permissive_value: [{"value": match, "score": 1.00}]};
-        }
 
         // step 2 check synonym
 
         // step 3 check AI, semantic similarity
-        const similarWords = await searchFromPermissiveValues(this.awsClient, input_value, permissive_values);
-        if (similarWords.length > 0) {
-            const similarWordArray  = Object.entries(similarWords).map(item => {
-                // Get the value of the object
-                return { value: item[1][0], score: item[1][1] }; 
-                 });   
-            return {status: "passed", input_value: input_value, suggestion_type: "NCIt", permissive_value: similarWordArray};
-        }
-
         return {status: "failed", input_value: input_value, suggestion_type: "NCIt", permissive_value: null};
     }
 
