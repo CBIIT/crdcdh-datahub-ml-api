@@ -1,0 +1,22 @@
+directive @public on FIELD_DEFINITION|QUERY
+
+type suggested_value {
+    value: String! #suggested value
+    score: Float!  #confidence score
+}
+
+type suggestionResponse {
+    status: String!  #passed if a permissive value exists, otherwise failed
+    input_value: String! # input to search permissive values
+    suggestion_type: String #value in [AI, NCIt]
+    permissive_value: [suggested_value]
+}
+
+type Query {
+    getPermissiveValue (
+        source: String! # such as data commons
+        version: String! # such as "1.0.0"
+        input_value: String! # input to search permissive values
+        property_name: String! # the property to search
+     ) : suggestionResponse @public
+}
