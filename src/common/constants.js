@@ -61,6 +61,8 @@ module.exports = Object.freeze({
     DEF_VERSION: "versions",
   
     TERM_CODE: "Code",
-    TERM_VERSION: "Version"
+    TERM_VERSION: "Version",
+
+    MAX_ALLOWED_LENGTH: 255
   });
   
